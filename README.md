@@ -39,17 +39,17 @@ O projeto segue uma estrutura modular de arquivos CSS, facilitando a manutençã
 
 Plaintext
 
-├── images/ # Ativos visuais (ícones e logos)
+`├── images/             # Ativos visuais (ícones e logos)
 ├── pages/
-│ └── index.css # Arquivo principal que importa os módulos
+│   └── index.css       # Arquivo principal que importa os módulos
 ├── scripts/
-│ └── index.js # Lógica principal e manipulação de eventos
-├── blocks/ # Módulos CSS baseados em BEM
-│ ├── card.css # Estilos dos cartões de imagem
-│ ├── popup.css # Estilos dos modais e formulários
-│ ├── profile.css # Seção de informações do usuário
-│ └── ...
-└── index.html # Estrutura principal da página
+│   └── index.js        # Lógica principal e manipulação de eventos
+├── blocks/             # Módulos CSS baseados em BEM
+│   ├── card.css        # Estilos dos cartões de imagem
+│   ├── popup.css       # Estilos dos modais e formulários
+│   ├── profile.css     # Seção de informações do usuário
+│   └── ...
+└── index.html          # Estrutura principal da página`
 
 ---
 
