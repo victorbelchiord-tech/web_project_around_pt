@@ -29,3 +29,23 @@ initialCards.forEach((card) => {
   console.log(`Gerando cartão para: ${card.name}`);
   console.log(`URL da imagem: ${card.link}`);
 });
+
+const editButton = document.querySelector(".profile__edit-button");
+const editModal = document.querySelector("#edit-popup");
+const closeButton = editModal.querySelector(".popup__close");
+
+function openModal(modal) {
+  modal.classList.add("popup_is-opened");
+}
+
+function closeModal(modal) {
+  modal.classList.remove("popup_is-opened");
+}
+
+editButton.addEventListener("click", () => {
+  openModal(editModal);
+});
+
+closeButton.addEventListener("click", () => {
+  closeModal(editModal);
+});
