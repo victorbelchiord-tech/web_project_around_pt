@@ -33,6 +33,10 @@ initialCards.forEach((card) => {
 const editButton = document.querySelector(".profile__edit-button");
 const editModal = document.querySelector("#edit-popup");
 const closeButton = editModal.querySelector(".popup__close");
+const profileTitle = document.querySelector(".profile__title");
+const profileSubtitle = document.querySelector(".profile__description");
+const nameInput = editModal.querySelector(".popup__input_type_name");
+const jobInput = editModal.querySelector(".popup__input_type_description");
 
 function openModal(modal) {
   modal.classList.add("popup_is-opened");
@@ -45,6 +49,22 @@ function closeModal(modal) {
 editButton.addEventListener("click", () => {
   openModal(editModal);
 });
+
+closeButton.addEventListener("click", () => {
+  closeModal(editModal);
+});
+
+function fillProfileForm() {
+  nameInput.value = profileTitle.textContent;
+  jobInput.value = profileSubtitle.textContent;
+}
+
+function handleOpenEditModal() {
+  fillProfileForm();
+  openModal(editModal);
+}
+
+editButton.addEventListener("click", handleOpenEditModal);
 
 closeButton.addEventListener("click", () => {
   closeModal(editModal);
