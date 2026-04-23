@@ -38,6 +38,20 @@ const profileSubtitle = document.querySelector(".profile__description");
 const nameInput = editModal.querySelector(".popup__input_type_name");
 const jobInput = editModal.querySelector(".popup__input_type_description");
 const editForm = editModal.querySelector(".popup__form");
+const cardsContainer = document.querySelector(".cards__list");
+const cardTemplate = document.querySelector("#card-template").content;
+const addCardButton = document.querySelector(".profile__add-button");
+const addCardModal = document.querySelector("#new-card-popup");
+const addCardCloseButton = addCardModal.querySelector(".popup__close");
+const addCardForm = addCardModal.querySelector("#new-card-form");
+const cardTitleInput = addCardForm.querySelector(
+  ".popup__input_type_card-name",
+);
+const cardLinkInput = addCardForm.querySelector(".popup__input_type_url");
+const imagePopup = document.querySelector("#image-popup");
+const popupImage = imagePopup.querySelector(".popup__image");
+const popupCaption = imagePopup.querySelector(".popup__caption");
+const imagePopupCloseButton = imagePopup.querySelector(".popup__close");
 
 function openModal(modal) {
   modal.classList.add("popup_is-opened");
@@ -79,3 +93,77 @@ function handleProfileFormSubmit(evt) {
 }
 
 editForm.addEventListener("submit", handleProfileFormSubmit);
+
+function handleLikeIcon(evt) {
+  evt.target.classList.toggle("card__like-button_active");
+}
+
+function handleDeleteCard(evt) {
+  const cardToBeDeleted = evt.target.closest(".card");
+  cardToBeDeleted.remove();
+}
+
+function getCardElement(
+  name = "Lugar sem nome",
+  link = "./images/placeholders/placeholder.jpg",
+) {
+  const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
+
+  const cardTitle = cardElement.querySelector(".card__title");
+  const cardImage = cardElement.querySelector(".card__image");
+
+  cardTitle.textContent = name;
+  cardImage.src = link;
+  cardImage.alt = name;
+
+  const likeButton = cardElement.querySelector(".card__like-button");
+  likeButton.addEventListener("click", handleLikeIcon);
+
+  const deleteButton = cardElement.querySelector(".card__delete-button");
+  deleteButton.addEventListener("click", handleDeleteCard);
+
+  cardImage.addEventListener("click", () => {
+    popupCaption.textContent = name;
+    popupImage.src = link;
+    popupImage.alt = name;
+    openModal(imagePopup);
+  });
+
+  return cardElement;
+}
+
+function renderCard(name, link, container) {
+  const cardElement = getCardElement(name, link);
+  container.prepend(cardElement);
+}
+
+initialCards.forEach((card) => {
+  renderCard(card.name, card.link, cardsContainer);
+});
+
+addCardButton.addEventListener("click", () => {
+  openModal(addCardModal);
+});
+
+addCardCloseButton.addEventListener("click", () => {
+  closeModal(addCardModal);
+});
+
+function handleCardFormSubmit(evt) {
+  evt.preventDefault();
+
+  const name = cardTitleInput.value;
+  const link = cardLinkInput.value;
+
+  renderCard(name, link, cardsContainer);
+
+  closeModal(addCardModal);
+
+  addCardForm.reset();
+}
+
+addCardForm.addEventListener("submit", handleCardFormSubmit);
+
+imagePopupCloseButton.addEventListener("click", () => {
+  closeModal(imagePopup);
+});
