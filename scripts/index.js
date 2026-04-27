@@ -95,7 +95,7 @@ function handleProfileFormSubmit(evt) {
 editForm.addEventListener("submit", handleProfileFormSubmit);
 
 function handleLikeIcon(evt) {
-  evt.target.classList.toggle("card__like-button_active");
+  evt.target.classList.toggle("card__like-button_is-active");
 }
 
 function handleDeleteCard(evt) {
