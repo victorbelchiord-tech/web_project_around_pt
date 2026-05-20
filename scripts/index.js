@@ -56,6 +56,11 @@ const editProfileForm = document.querySelector("#edit-profile-form");
 const nameInputEl = editProfileForm.querySelector("#profile-name-input");
 const aboutInputEl = editProfileForm.querySelector("#profile-about-input");
 const submitButtonEl = editProfileForm.querySelector(".popup__button");
+const newCardForm = document.querySelector("#new-card-form");
+const cardTitleInputEl = newCardForm.querySelector("#card-title-input");
+const cardLinkInputEl = newCardForm.querySelector("#card-link-input");
+const cardSubmitButtonEl = newCardForm.querySelector(".popup__button");
+const popups = document.querySelectorAll(".popup");
 
 function openModal(modal) {
   modal.classList.add("popup_is-opened");
@@ -107,10 +112,7 @@ function handleDeleteCard(evt) {
   cardToBeDeleted.remove();
 }
 
-function getCardElement(
-  name = "Lugar sem nome",
-  link = "./images/placeholders/placeholder.jpg",
-) {
+function getCardElement(name, link) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
 
   const cardTitle = cardElement.querySelector(".card__title");
@@ -220,4 +222,73 @@ function handleOpenEditModal() {
   hideInputError(aboutInputEl);
   toggleButtonState();
   openModal(editModal);
+}
+
+function checkCardInputValidity(inputElement) {
+  if (!inputElement.validity.valid) {
+    const errorElement = newCardForm.querySelector(`#${inputElement.id}-error`);
+    inputElement.classList.add("popup__input_type_error");
+    errorElement.textContent = inputElement.validationMessage;
+    errorElement.classList.add("popup__error_visible");
+  } else {
+    const errorElement = newCardForm.querySelector(`#${inputElement.id}-error`);
+    inputElement.classList.remove("popup__input_type_error");
+    errorElement.textContent = "";
+    errorElement.classList.remove("popup__error_visible");
+  }
+}
+
+function toggleCardButtonState() {
+  if (!newCardForm.checkValidity()) {
+    cardSubmitButtonEl.disabled = true;
+    cardSubmitButtonEl.classList.add("popup__button_disabled");
+  } else {
+    cardSubmitButtonEl.disabled = false;
+    cardSubmitButtonEl.classList.remove("popup__button_disabled");
+  }
+}
+
+newCardForm.addEventListener("input", (evt) => {
+  const targetInput = evt.target;
+  checkCardInputValidity(targetInput);
+  toggleCardButtonState();
+});
+
+addCardButton.addEventListener("click", () => {
+  cardTitleInputEl.classList.remove("popup__input_type_error");
+  cardLinkInputEl.classList.remove("popup__input_type_error");
+  newCardForm.querySelector("#card-title-input-error").textContent = "";
+  newCardForm.querySelector("#card-link-input-error").textContent = "";
+
+  toggleCardButtonState();
+  openModal(addCardModal);
+});
+
+popups.forEach((popup) => {
+  popup.addEventListener("mousedown", (evt) => {
+    if (evt.target.classList.contains("popup")) {
+      closeModal(popup);
+    }
+  });
+});
+
+function handleEscClose(evt) {
+  if (evt.key === "Escape") {
+    const openedPopup = document.querySelector(".popup_is-opened");
+    if (openedPopup) {
+      closeModal(openedPopup);
+    }
+  }
+}
+
+function openModal(popup) {
+  popup.classList.add("popup_is-opened");
+
+  document.addEventListener("keydown", handleEscClose);
+}
+
+function closeModal(popup) {
+  popup.classList.remove("popup_is-opened");
+
+  document.removeEventListener("keydown", handleEscClose);
 }
