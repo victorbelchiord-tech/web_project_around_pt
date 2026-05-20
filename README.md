@@ -6,10 +6,6 @@
 
 ---
 
-_(Substitua este espaço por um GIF ou Screenshot do seu projeto rodando)_
-
----
-
 ## 📌 Índice
 
 1. [Sobre o Projeto](#-sobre-o-projeto)
