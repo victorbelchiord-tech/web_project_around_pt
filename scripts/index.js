@@ -52,6 +52,10 @@ const imagePopup = document.querySelector("#image-popup");
 const popupImage = imagePopup.querySelector(".popup__image");
 const popupCaption = imagePopup.querySelector(".popup__caption");
 const imagePopupCloseButton = imagePopup.querySelector(".popup__close");
+const editProfileForm = document.querySelector("#edit-profile-form");
+const nameInputEl = editProfileForm.querySelector("#profile-name-input");
+const aboutInputEl = editProfileForm.querySelector("#profile-about-input");
+const submitButtonEl = editProfileForm.querySelector(".popup__button");
 
 function openModal(modal) {
   modal.classList.add("popup_is-opened");
@@ -167,3 +171,53 @@ addCardForm.addEventListener("submit", handleCardFormSubmit);
 imagePopupCloseButton.addEventListener("click", () => {
   closeModal(imagePopup);
 });
+
+function showInputError(inputElement, errorMessage) {
+  const errorElement = editProfileForm.querySelector(
+    `#${inputElement.id}-error`,
+  );
+  inputElement.classList.add("popup__input_type_error");
+  errorElement.textContent = errorMessage;
+  errorElement.classList.add("popup__error_visible");
+}
+
+function hideInputError(inputElement) {
+  const errorElement = editProfileForm.querySelector(
+    `#${inputElement.id}-error`,
+  );
+  inputElement.classList.remove("popup__input_type_error");
+  errorElement.textContent = "";
+  errorElement.classList.remove("popup__error_visible");
+}
+
+function checkInputValidity(inputElement) {
+  if (!inputElement.validity.valid) {
+    showInputError(inputElement, inputElement.validationMessage);
+  } else {
+    hideInputError(inputElement);
+  }
+}
+
+function toggleButtonState() {
+  if (!editProfileForm.checkValidity()) {
+    submitButtonEl.disabled = true;
+    submitButtonEl.classList.add("popup__button_disabled");
+  } else {
+    submitButtonEl.disabled = false;
+    submitButtonEl.classList.remove("popup__button_disabled");
+  }
+}
+
+editProfileForm.addEventListener("input", (evt) => {
+  const targetInput = evt.target;
+  checkInputValidity(targetInput);
+  toggleButtonState();
+});
+
+function handleOpenEditModal() {
+  fillProfileForm();
+  hideInputError(nameInputEl);
+  hideInputError(aboutInputEl);
+  toggleButtonState();
+  openModal(editModal);
+}
