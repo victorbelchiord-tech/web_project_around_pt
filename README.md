@@ -6,77 +6,43 @@
 
 ---
 
+_(Substitua este espaço por um GIF ou Screenshot do seu projeto rodando)_
+
+---
+
+## 📌 Índice
+
+1. [Sobre o Projeto](#-sobre-o-projeto)
+2. [Tech Stack](#%EF%B8%8F-tech-stack)
+3. [Funcionalidades Principais](#-funcionalidades-principais)
+4. [Instalação e Uso](#-instala%C3%A7%C3%A3o-e-uso)
+5. [Arquitetura de Arquivos](#-arquitetura-de-arquivos)
+6. [Regras de Validação Implementadas](#%EF%B8%8F-regras-de-valida%C3%A7%C3%A3o-implementadas)
+7. [Contribuição](#-contribui%C3%A7%C3%A3o)
+8. [Licença e Contato](#-licen%C3%A7a-e-contato)
+
+---
+
 ## 📖 Sobre o Projeto
 
-O **Around The U.S.** é uma aplicação front-end desenvolvida para proporcionar uma experiência de galeria interativa. O foco do projeto foi aplicar conceitos avançados de **DOM Manipulation**, validação de formulários e design responsivo, garantindo que a interface seja fluida tanto em desktops quanto em dispositivos móveis.
+O **Around The U.S.** é uma aplicação web interativa baseada em um modelo do Figma. O projeto resolve o problema do compartilhamento rápido de imagens e gerenciamento de perfil do usuário de forma local e assíncrona na tela. Ele utiliza conceitos avançados de manipulação do DOM (Document Object Model) e escutas de eventos em tempo real para proporcionar interatividade sem a necessidade de recarregar a página.
 
 ---
 
-## ✨ Funcionalidades
+## 🛠️ Tech Stack
 
-- **Edição de Perfil**: Atualização dinâmica de nome e profissão via popup.
-- **Gestão de Conteúdo**: Adição de novos locais com título e URL de imagem.
-- **Interatividade**: Sistema de "curtir" (like) e exclusão de cards.
-- **Visualização Ampliada**: Visualização de imagens em tela cheia através de modais específicos.
-- **Design Responsivo**: Layout adaptável para resoluções de 320px a 1280px+.
-
----
-
-## 🛠️ Tecnologias Utilizadas
-
-| **Tecnologia**        | **Finalidade**                                              |
-| --------------------- | ----------------------------------------------------------- |
-| **HTML5**             | Estruturação semântica do conteúdo.                         |
-| **CSS3**              | Estilização avançada, Grid Layout, Flexbox e Media Queries. |
-| **JavaScript (ES6+)** | Lógica de negócios, manipulação do DOM e eventos.           |
-| **BEM Methodology**   | Organização de classes CSS para escalabilidade.             |
+| Camada          | Tecnologia               | Propósito                                                          |
+| :-------------- | :----------------------- | :----------------------------------------------------------------- |
+| **Estrutura**   | HTML5 Semântico          | Organização de modais, inputs e seções acessíveis.                 |
+| **Estilização** | CSS3 (Metodologia BEM)   | Layout responsivo em Grid/Flexbox e modularização.                 |
+| **Lógica**      | JavaScript Vanilla (ES6) | Validação nativa de formulários e gerenciamento de estados do DOM. |
 
 ---
 
-## 🏗️ Arquitetura e Estrutura
+## ✨ Funcionalidades Principais
 
-O projeto segue uma estrutura modular de arquivos CSS, facilitando a manutenção:
-
-Plaintext
-
-`├── images/             # Ativos visuais (ícones e logos)
-├── pages/
-│   └── index.css       # Arquivo principal que importa os módulos
-├── scripts/
-│   └── index.js        # Lógica principal e manipulação de eventos
-├── blocks/             # Módulos CSS baseados em BEM
-│   ├── card.css        # Estilos dos cartões de imagem
-│   ├── popup.css       # Estilos dos modais e formulários
-│   ├── profile.css     # Seção de informações do usuário
-│   └── ...
-└── index.html          # Estrutura principal da página`
-
----
-
-## 🚀 Instalação e Uso
-
-Para rodar este projeto localmente, siga os passos abaixo:
-
-1. **Clone o repositório:**Bash
-
-   `git clone https://github.com/seu-usuario/around-the-us.git`
-
-2. **Navegue até o diretório:**Bash
-
-   `cd around-the-us`
-
-3. **Abra o projeto:**
-
-   Como o projeto utiliza Vanilla JavaScript e CSS puro, basta abrir o arquivo `index.html` em seu navegador de preferência ou utilizar a extensão **Live Server** no VS Code.
-
----
-
-## 🤝 Contribuição
-
-Contribuições são o que tornam a comunidade open source um lugar incrível para aprender e criar.
-
-1. Faça um **Fork** do projeto.
-2. Crie uma **Branch** para sua feature (`git checkout -b feature/IncrívelFeature`).
-3. Dê um **Commit** em suas alterações (`git commit -m 'Add: Alguma Feature'`).
-4. Faça um **Push** para a Branch (`git push origin feature/IncrívelFeature`).
-5. Abra um **Pull Request**.
+- **Gerenciamento de Perfil:** Edição de Nome e Descrição com atualização dinâmica na tela.
+- **Galeria Interativa:** Adição de novos cartões de viagem contendo título e link de imagem válido.
+- **Validação em Tempo Real:** Inputs monitorados via JavaScript com bloqueio inteligente do botão de envio (`Submit`) e alteração visual da borda inferior em caso de erro.
+- **Acessibilidade Avançada UX:** Fechamento de modais de forma intuitiva clicando fora do conteúdo (Overlay) ou pressionando a tecla `Esc`.
+- **Interações Dinâmicas:** Sistema de curtidas com alteração visual de ícone e exclusão de cartões em tempo real.
