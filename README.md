@@ -44,26 +44,27 @@ O **Around The U.S.** é uma aplicação web interativa baseada em um modelo do 
 
 ## 📐 Arquitetura de Arquivos
 
-A estrutura do projeto foi padronizada de forma modular para fácil manutenção do código:
-
-Plaintext
-around-the-us/
-├── index.html # Estrutura principal da SPA e declaração dos templates
-├── index.js # Lógica central da aplicação (Event Listeners e Validação)
-├── blocks/ # CSS modular separado por blocos (Metodologia BEM)
-│ ├── card.css # Estilos dos cartões individuais
-│ ├── cards.css # Grade/Grid dos cartões
-│ ├── content.css # Conteúdo central da página
-│ ├── footer.css # Rodapé
-│ ├── header.css # Cabeçalho e Logotipo
-│ ├── page.css # Configurações globais da página e plano de fundo
-│ ├── popup.css # Estilos dos Modais, Estados de Erro e Inputs
-│ └── profile.css # Seção de informações do usuário
-└── pages/
-└── index.css # Arquivo agregador que importa as folhas de estilo individuais
+| Arquivo / Diretório  | Tipo / Contexto       | Descrição e Responsabilidade Técnica                                                                                                   |
+| :------------------- | :-------------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.html`         | Estrutura Principal   | Arquivo raiz contendo a SPA, marcação dos modais de pop-up e as estruturas de template para renderização dos cartões.                  |
+| `index.js`           | Lógica Central        | Script principal responsável pela captura do DOM, gerenciamento de estados, listeners globais (Esc/clique fora) e funções de callback. |
+| `blocks/card.css`    | Componente UI         | Estilização individual de cada cartão de imagem, incluindo o posicionamento das imagens e botões internos.                             |
+| `blocks/cards.css`   | Componente Layout     | Gerenciamento da grade de exibição utilizando CSS Grid com comportamento responsivo (auto-fit).                                        |
+| `blocks/content.css` | Componente Estrutural | Definição das propriedades de crescimento flexível do contêiner principal da aplicação.                                                |
+| `blocks/footer.css`  | Componente UI         | Estilização do rodapé da aplicação corporativa, assegurando a tipografia e espaçamentos corretos.                                      |
+| `blocks/header.css`  | Componente UI         | Alinhamento do logotipo superior e controle de altura flexível para dispositivos móveis.                                               |
+| `blocks/page.css`    | Escopo Global         | Configurações globais do plano de fundo e centralização da seção baseada na largura máxima recomendada.                                |
+| `blocks/popup.css`   | Componente Feedback   | Estilos de modais sobrepostos, animações de abertura, estados ativos de erro e estilização de botões desabilitados.                    |
+| `blocks/profile.css` | Componente UI         | Organização em grid das informações do usuário explorador, foto de perfil arredondada e botões de gatilho.                             |
+| `pages/index.css`    | Arquivo Agregador     | Ponto de entrada CSS que consolida as importações de todos os arquivos do diretório blocks para otimização.                            |
 
 ---
 
 ### ⚠️ Regras de Validação Implementadas
 
-FormulárioCampoTipo / RegraComportamento em caso de ErroEditar PerfilNomeRequired, Min 2 / Max 40 caract.Texto explicativo vermelho + borda inferior vermelha.Editar PerfilSobre mimRequired, Min 2 / Max 200 caract.Desativa o botão "Salvar".Novo LocalTítuloRequired, Min 2 / Max 30 caract.Texto explicativo vermelho + borda inferior vermelha.Novo LocalLink de ImagemRequired, Formato de URLDesativa o botão "Criar".
+| Formulário        | Campo          | Tipo / Regra                        | Comportamento em caso de Erro                         |
+| :---------------- | :------------- | :---------------------------------- | :---------------------------------------------------- |
+| **Editar Perfil** | Nome           | `Required`, Min 2 / Max 40 caract.  | Texto explicativo vermelho + borda inferior vermelha. |
+| **Editar Perfil** | Sobre mim      | `Required`, Min 2 / Max 200 caract. | Desativa o botão "Salvar".                            |
+| **Novo Local**    | Título         | `Required`, Min 2 / Max 30 caract.  | Texto explicativo vermelho + borda inferior vermelha. |
+| **Novo Local**    | Link de Imagem | `Required`, Formato de `URL`        | Desativa o botão "Criar".                             |
