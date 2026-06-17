@@ -1,3 +1,7 @@
+import { Card } from "./Card.js";
+import { FormValidator } from "./FormValidator.js";
+import { openModal, closeModal, handleOverlayClose } from "./utils.js";
+
 const initialCards = [
   {
     name: "Vale de Yosemite",
@@ -25,6 +29,14 @@ const initialCards = [
   },
 ];
 
+const validationConfig = {
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
+
 const editButton = document.querySelector(".profile__edit-button");
 const editModal = document.querySelector("#edit-popup");
 const closeButton = editModal.querySelector(".popup__close");
@@ -33,8 +45,10 @@ const profileSubtitle = document.querySelector(".profile__description");
 const nameInput = editModal.querySelector(".popup__input_type_name");
 const jobInput = editModal.querySelector(".popup__input_type_description");
 const editForm = editModal.querySelector(".popup__form");
+
 const cardsContainer = document.querySelector(".cards__list");
-const cardTemplate = document.querySelector("#card_template").content;
+const cardTemplateSelector = "#card_template";
+
 const addCardButton = document.querySelector(".profile__add-button");
 const addCardModal = document.querySelector("#new-card-popup");
 const addCardCloseButton = addCardModal.querySelector(".popup__close");
@@ -43,38 +57,39 @@ const cardTitleInput = addCardForm.querySelector(
   ".popup__input_type_card-name",
 );
 const cardLinkInput = addCardForm.querySelector(".popup__input_type_url");
+
 const imagePopup = document.querySelector("#image-popup");
 const popupImage = imagePopup.querySelector(".popup__image");
 const popupCaption = imagePopup.querySelector(".popup__caption");
 const imagePopupCloseButton = imagePopup.querySelector(".popup__close");
+
 const editProfileForm = document.querySelector("#edit-profile-form");
-const nameInputEl = editProfileForm.querySelector("#profile-name-input");
-const aboutInputEl = editProfileForm.querySelector("#profile-about-input");
-const submitButtonEl = editProfileForm.querySelector(".popup__button");
 const newCardForm = document.querySelector("#new-card-form");
-const cardTitleInputEl = newCardForm.querySelector("#card-title-input");
-const cardLinkInputEl = newCardForm.querySelector("#card-link-input");
-const cardSubmitButtonEl = newCardForm.querySelector(".popup__button");
+
 const popups = document.querySelectorAll(".popup");
 
-function handleEscClose(evt) {
-  if (evt.key === "Escape") {
-    const openedPopup = document.querySelector(".popup_is-opened");
-    if (openedPopup) {
-      closeModal(openedPopup);
-    }
-  }
+const editFormValidator = new FormValidator(validationConfig, editProfileForm);
+editFormValidator.setEventListeners();
+
+const addCardFormValidator = new FormValidator(validationConfig, newCardForm);
+addCardFormValidator.setEventListeners();
+
+function handleOpenImagePopup(name, link) {
+  popupCaption.textContent = name;
+  popupImage.src = link;
+  popupImage.alt = name;
+  openModal(imagePopup);
 }
 
-function openModal(popup) {
-  popup.classList.add("popup_is-opened");
-  document.addEventListener("keydown", handleEscClose);
+function renderCard(cardData, container) {
+  const card = new Card(cardData, cardTemplateSelector, handleOpenImagePopup);
+  const cardElement = card.generateCard();
+  container.prepend(cardElement);
 }
 
-function closeModal(popup) {
-  popup.classList.remove("popup_is-opened");
-  document.removeEventListener("keydown", handleEscClose);
-}
+initialCards.forEach((cardData) => {
+  renderCard(cardData, cardsContainer);
+});
 
 function fillProfileForm() {
   nameInput.value = profileTitle.textContent;
@@ -83,9 +98,7 @@ function fillProfileForm() {
 
 function handleOpenEditModal() {
   fillProfileForm();
-  hideInputError(editProfileForm, nameInputEl);
-  hideInputError(editProfileForm, aboutInputEl);
-  toggleButtonState(editProfileForm, submitButtonEl);
+  editFormValidator.resetValidation();
   openModal(editModal);
 }
 
@@ -100,65 +113,21 @@ editButton.addEventListener("click", handleOpenEditModal);
 closeButton.addEventListener("click", () => closeModal(editModal));
 editForm.addEventListener("submit", handleProfileFormSubmit);
 
-function handleLikeIcon(evt) {
-  evt.target.classList.toggle("card__like-button_is-active");
-}
-
-function handleDeleteCard(evt) {
-  const cardToBeDeleted = evt.target.closest(".card");
-  cardToBeDeleted.remove();
-}
-
-function getCardElement(name, link) {
-  const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
-
-  const cardTitle = cardElement.querySelector(".card__title");
-  const cardImage = cardElement.querySelector(".card__image");
-
-  cardTitle.textContent = name;
-  cardImage.src = link;
-  cardImage.alt = name;
-
-  const likeButton = cardElement.querySelector(".card__like-button");
-  likeButton.addEventListener("click", handleLikeIcon);
-
-  const deleteButton = cardElement.querySelector(".card__delete-button");
-  deleteButton.addEventListener("click", handleDeleteCard);
-
-  cardImage.addEventListener("click", () => {
-    popupCaption.textContent = name;
-    popupImage.src = link;
-    popupImage.alt = name;
-    openModal(imagePopup);
-  });
-
-  return cardElement;
-}
-
-function renderCard(name, link, container) {
-  const cardElement = getCardElement(name, link);
-  container.prepend(cardElement);
-}
-
-initialCards.forEach((card) => {
-  renderCard(card.name, card.link, cardsContainer);
-});
-
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
 
-  const name = cardTitleInput.value;
-  const link = cardLinkInput.value;
+  const newCardData = {
+    name: cardTitleInput.value,
+    link: cardLinkInput.value,
+  };
 
-  renderCard(name, link, cardsContainer);
+  renderCard(newCardData, cardsContainer);
   closeModal(addCardModal);
   addCardForm.reset();
 }
 
 addCardButton.addEventListener("click", () => {
-  hideInputError(newCardForm, cardTitleInputEl);
-  hideInputError(newCardForm, cardLinkInputEl);
-  toggleButtonState(newCardForm, cardSubmitButtonEl);
+  addCardFormValidator.resetValidation();
   openModal(addCardModal);
 });
 
@@ -166,52 +135,6 @@ addCardCloseButton.addEventListener("click", () => closeModal(addCardModal));
 addCardForm.addEventListener("submit", handleCardFormSubmit);
 imagePopupCloseButton.addEventListener("click", () => closeModal(imagePopup));
 
-function showInputError(formElement, inputElement, errorMessage) {
-  const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
-  inputElement.classList.add("popup__input_type_error");
-  errorElement.textContent = errorMessage;
-  errorElement.classList.add("popup__error_visible");
-}
-
-function hideInputError(formElement, inputElement) {
-  const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
-  inputElement.classList.remove("popup__input_type_error");
-  errorElement.textContent = "";
-  errorElement.classList.remove("popup__error_visible");
-}
-
-function checkInputValidity(formElement, inputElement) {
-  if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage);
-  } else {
-    hideInputError(formElement, inputElement);
-  }
-}
-
-function toggleButtonState(formElement, buttonElement) {
-  if (!formElement.checkValidity()) {
-    buttonElement.disabled = true;
-    buttonElement.classList.add("popup__button_disabled");
-  } else {
-    buttonElement.disabled = false;
-    buttonElement.classList.remove("popup__button_disabled");
-  }
-}
-
-editProfileForm.addEventListener("input", (evt) => {
-  checkInputValidity(editProfileForm, evt.target);
-  toggleButtonState(editProfileForm, submitButtonEl);
-});
-
-newCardForm.addEventListener("input", (evt) => {
-  checkInputValidity(newCardForm, evt.target);
-  toggleButtonState(newCardForm, cardSubmitButtonEl);
-});
-
 popups.forEach((popup) => {
-  popup.addEventListener("mousedown", (evt) => {
-    if (evt.target.classList.contains("popup")) {
-      closeModal(popup);
-    }
-  });
+  popup.addEventListener("mousedown", handleOverlayClose);
 });
