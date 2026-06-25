@@ -21,6 +21,8 @@
 
 O **Around The U.S.** é uma aplicação web interativa baseada em um modelo do Figma. O projeto resolve o problema do compartilhamento rápido de imagens e gerenciamento de perfil do usuário de forma local e assíncrona na tela. Ele utiliza conceitos avançados de manipulação do DOM (Document Object Model), Programação Orientada a Objetos com classes ES6 e módulos JavaScript para proporcionar interatividade sem a necessidade de recarregar a página, mantendo o código organizado, reutilizável e de fácil manutenção.
 
+Nesta etapa do projeto, toda a lógica anteriormente distribuída em funções utilitárias e manipulações diretas do DOM foi encapsulada em **classes com responsabilidades bem definidas**, seguindo os princípios de orientação a objetos: herança, encapsulamento e separação de responsabilidades.
+
 ---
 
 ## 🛠️ Tech Stack
@@ -36,9 +38,10 @@ O **Around The U.S.** é uma aplicação web interativa baseada em um modelo do 
 
 ## ✨ Funcionalidades Principais
 
-- **Gerenciamento de Perfil:** Edição de Nome e Descrição com atualização dinâmica na tela.
-- **Galeria Interativa:** Adição de novos cartões de viagem contendo título e link de imagem válido, gerados a partir da classe `Card`.
-- **Validação em Tempo Real:** Inputs monitorados via a classe `FormValidator`, com bloqueio inteligente do botão de envio (`Submit`) e alteração visual da borda inferior em caso de erro.
+- **Gerenciamento de Perfil:** Edição de Nome e Descrição com atualização dinâmica na tela via a classe `UserInfo`.
+- **Galeria Interativa:** Adição de novos cartões de viagem via a classe `Section`, que gerencia a renderização e inserção dos elementos na página.
+- **Pop-ups Orientados a Objetos:** Toda a lógica de abertura, fechamento (botão, tecla Esc e overlay) e reset de formulários está encapsulada nas classes `Popup`, `PopupWithImage` e `PopupWithForm`.
+- **Validação em Tempo Real:** Inputs monitorados via a classe `FormValidator`, com bloqueio inteligente do botão de envio e alteração visual da borda inferior em caso de erro.
 - **Acessibilidade Avançada UX:** Fechamento de modais de forma intuitiva clicando fora do conteúdo (Overlay) ou pressionando a tecla `Esc`.
 - **Interações Dinâmicas:** Sistema de curtidas com alteração visual de ícone e exclusão de cartões em tempo real.
 
@@ -46,66 +49,96 @@ O **Around The U.S.** é uma aplicação web interativa baseada em um modelo do 
 
 ## 📐 Arquitetura de Arquivos
 
-| Arquivo / Diretório        | Tipo / Contexto       | Descrição e Responsabilidade Técnica                                                                                                                                       |
-| :------------------------- | :-------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `index.html`               | Estrutura Principal   | Arquivo raiz contendo a SPA, marcação dos modais de pop-up e as estruturas de template para renderização dos cartões.                                                      |
-| `scripts/index.js`         | Lógica Central        | Ponto de entrada da aplicação. Importa as classes e funções dos demais módulos, captura elementos do DOM, instancia `Card` e `FormValidator` e conecta os eventos globais. |
-| `scripts/Card.js`          | Classe / Componente   | Define a classe `Card`, responsável por gerar a marcação de cada cartão a partir do template e controlar seus próprios eventos (curtir, excluir, abrir imagem).            |
-| `scripts/FormValidator.js` | Classe / Validação    | Define a classe `FormValidator`, responsável por validar os campos de um formulário e controlar o estado do botão de envio.                                                |
-| `scripts/utils.js`         | Funções Utilitárias   | Reúne as funções compartilhadas de abertura/fechamento de modais (`openModal`, `closeModal`) e o fechamento via clique no overlay.                                         |
-| `blocks/card.css`          | Componente UI         | Estilização individual de cada cartão de imagem, incluindo o posicionamento das imagens e botões internos.                                                                 |
-| `blocks/cards.css`         | Componente Layout     | Gerenciamento da grade de exibição utilizando CSS Grid com comportamento responsivo (auto-fit).                                                                            |
-| `blocks/content.css`       | Componente Estrutural | Definição das propriedades de crescimento flexível do contêiner principal da aplicação.                                                                                    |
-| `blocks/footer.css`        | Componente UI         | Estilização do rodapé da aplicação corporativa, assegurando a tipografia e espaçamentos corretos.                                                                          |
-| `blocks/header.css`        | Componente UI         | Alinhamento do logotipo superior e controle de altura flexível para dispositivos móveis.                                                                                   |
-| `blocks/page.css`          | Escopo Global         | Configurações globais do plano de fundo e centralização da seção baseada na largura máxima recomendada.                                                                    |
-| `blocks/popup.css`         | Componente Feedback   | Estilos de modais sobrepostos, animações de abertura, estados ativos de erro e estilização de botões desabilitados.                                                        |
-| `blocks/profile.css`       | Componente UI         | Organização em grid das informações do usuário explorador, foto de perfil arredondada e botões de gatilho.                                                                 |
-| `pages/index.css`          | Arquivo Agregador     | Ponto de entrada CSS que consolida as importações de todos os arquivos do diretório blocks para otimização.                                                                |
+| Arquivo / Diretório         | Tipo / Contexto       | Descrição e Responsabilidade Técnica                                                                                                                                                             |
+| :-------------------------- | :-------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.html`                | Estrutura Principal   | Arquivo raiz contendo a SPA, marcação dos modais de pop-up e as estruturas de template para renderização dos cartões.                                                                            |
+| `scripts/index.js`          | Lógica Central        | Ponto de entrada da aplicação. Importa todas as classes, instancia os objetos e adiciona apenas os ouvintes de eventos específicos de cada interação do usuário.                                 |
+| `scripts/Card.js`           | Classe / Componente   | Define a classe `Card`. Recebe `handleCardClick` no construtor para abrir o pop-up de imagem ao clicar no cartão.                                                                                |
+| `scripts/FormValidator.js`  | Classe / Validação    | Define a classe `FormValidator`, responsável por validar os campos de um formulário e controlar o estado do botão de envio.                                                                      |
+| `scripts/Popup.js`          | Classe / Modal Base   | Classe base que encapsula a lógica de abertura/fechamento de pop-ups, incluindo o fechamento por tecla Esc e clique no overlay.                                                                  |
+| `scripts/PopupWithImage.js` | Classe / Modal Imagem | Classe filha de `Popup`. Sobrescreve o método `open()` para preencher a imagem e a legenda antes de exibir o pop-up.                                                                             |
+| `scripts/PopupWithForm.js`  | Classe / Modal Form   | Classe filha de `Popup`. Adiciona lógica de submit ao formulário via callback, coleta os valores dos inputs com `_getInputValues()` e reseta o formulário ao fechar.                             |
+| `scripts/UserInfo.js`       | Classe / Perfil       | Gerencia a leitura (`getUserInfo`) e a escrita (`setUserInfo`) das informações de nome e descrição do perfil do usuário na página.                                                               |
+| `scripts/Section.js`        | Classe / Renderização | Responsável por renderizar uma lista de itens em um contêiner do DOM. Recebe os dados e a função de renderização via construtor, e expõe `addItem()` para inserção de elementos individualmente. |
+| `blocks/card.css`           | Componente UI         | Estilização individual de cada cartão de imagem.                                                                                                                                                 |
+| `blocks/cards.css`          | Componente Layout     | Gerenciamento da grade de exibição utilizando CSS Grid com comportamento responsivo (auto-fit).                                                                                                  |
+| `blocks/content.css`        | Componente Estrutural | Definição das propriedades de crescimento flexível do contêiner principal da aplicação.                                                                                                          |
+| `blocks/footer.css`         | Componente UI         | Estilização do rodapé da aplicação.                                                                                                                                                              |
+| `blocks/header.css`         | Componente UI         | Alinhamento do logotipo superior e controle de altura flexível para dispositivos móveis.                                                                                                         |
+| `blocks/page.css`           | Escopo Global         | Configurações globais do plano de fundo e centralização da seção baseada na largura máxima recomendada.                                                                                          |
+| `blocks/popup.css`          | Componente Feedback   | Estilos de modais sobrepostos, estados ativos de erro e estilização de botões desabilitados.                                                                                                     |
+| `blocks/profile.css`        | Componente UI         | Organização em grid das informações do usuário, foto de perfil e botões de gatilho.                                                                                                              |
+| `pages/index.css`           | Arquivo Agregador     | Ponto de entrada CSS que consolida as importações de todos os arquivos do diretório blocks.                                                                                                      |
 
 ---
 
 ## 🧩 Arquitetura JavaScript: Classes e Módulos
 
-A lógica de JavaScript foi dividida em **módulos ES6** (`import`/`export`), carregados no `index.html` através de `<script src="scripts/index.js" type="module"></script>`. Essa separação isola responsabilidades, evita poluição do escopo global e facilita testes e manutenção futura.
+A lógica de JavaScript foi dividida em **módulos ES6** (`import`/`export`), carregados no `index.html` através de `<script src="scripts/index.js" type="module"></script>`.
+
+### Classe `Popup`
+
+Classe base responsável por toda a lógica de abertura e fechamento de pop-ups.
+
+- **Construtor:** recebe o seletor CSS do pop-up.
+- **Métodos privados:**
+  - `_handleEscClose(evt)` — fecha o pop-up ao pressionar a tecla `Esc`.
+- **Métodos públicos:**
+  - `open()` — adiciona a classe `popup_is-opened` e registra o listener da tecla Esc.
+  - `close()` — remove a classe `popup_is-opened` e desregistra o listener da tecla Esc.
+  - `setEventListeners()` — adiciona o listener ao botão de fechar (`.popup__close`) e ao clique no overlay.
+
+### Classe `PopupWithImage` _(filha de Popup)_
+
+Especialização da classe `Popup` para o pop-up de visualização de imagem.
+
+- **Construtor:** herda o seletor do pop-up de `Popup` e captura os elementos `.popup__image` e `.popup__caption`.
+- **Método público:**
+  - `open(name, link)` — preenche a imagem (`src`, `alt`) e a legenda antes de chamar `super.open()`.
+
+### Classe `PopupWithForm` _(filha de Popup)_
+
+Especialização da classe `Popup` para pop-ups que contêm formulários.
+
+- **Construtor:** recebe o seletor do pop-up e uma função de callback `handleFormSubmit`.
+- **Métodos privados:**
+  - `_getInputValues()` — percorre os inputs do formulário e retorna um objeto `{ name: value }` para cada campo.
+- **Métodos públicos:**
+  - `close()` — chama `super.close()` e também reseta o formulário (`form.reset()`).
+  - `setEventListeners()` — chama `super.setEventListeners()` e adiciona o listener de `submit` ao formulário, chamando o callback com os valores dos inputs.
+
+### Classe `UserInfo`
+
+Responsável por gerenciar as informações do perfil do usuário na página.
+
+- **Construtor:** recebe um objeto `{ nameSelector, descriptionSelector }` com os seletores dos elementos de nome e descrição.
+- **Métodos públicos:**
+  - `getUserInfo()` — retorna um objeto `{ name, description }` com os valores atuais do perfil.
+  - `setUserInfo({ name, description })` — atualiza os elementos do perfil na página com os novos valores recebidos.
+
+### Classe `Section`
+
+Responsável por renderizar uma lista de elementos em um contêiner do DOM.
+
+- **Construtor:** recebe um objeto `{ items, renderer }` e o seletor do contêiner. `items` é o array de dados iniciais; `renderer` é a função de callback que cria e insere cada elemento.
+- **Métodos públicos:**
+  - `renderItems()` — itera sobre `items` chamando `renderer` para cada um.
+  - `addItem(element)` — insere um elemento DOM no início do contêiner com `prepend`.
 
 ### Classe `Card`
 
-Responsável por criar um cartão completo (imagem + título) a partir dos dados recebidos e do template HTML.
+Responsável por criar um cartão completo a partir dos dados recebidos e do template HTML.
 
-- **Construtor:** recebe os dados do cartão (`name`, `link`), o seletor do elemento `<template>` e uma função de callback para abrir o pop-up de imagem.
-- **Métodos privados** (convenção `_nomeDoMetodo`):
-  - `_getTemplate()` — clona a marcação do template no DOM.
-  - `_fillCardData()` — preenche a imagem, o `alt` e o título com os dados recebidos.
-  - `_setEventListeners()` — adiciona os ouvintes de evento aos botões e à imagem do cartão.
-  - `_handleLikeIcon()`, `_handleDeleteCard()`, `_handleImageClick()` — um manipulador para cada interação do cartão.
-- **Método público:** `generateCard()` — monta o cartão por completo e devolve o elemento pronto para ser inserido na página.
+- **Construtor:** recebe os dados do cartão (`name`, `link`), o seletor do `<template>` e a função `handleCardClick` para abrir o pop-up de imagem.
+- **Método público:** `generateCard()` — monta o cartão e devolve o elemento pronto para ser inserido na página.
 
 ### Classe `FormValidator`
 
-Responsável por validar um formulário e controlar visualmente o estado do botão de envio.
-
-- **Construtor:** recebe um objeto de configuração (seletores de input/botão e classes CSS de erro/estado inativo) e o elemento do formulário a ser validado.
-- **Métodos privados:**
-  - `_showInputError()` / `_hideInputError()` — exibem ou ocultam a mensagem de erro de um campo.
-  - `_checkInputValidity()` — verifica a validade de um campo individual.
-  - `_hasInvalidInput()` — verifica se existe algum campo inválido no formulário.
-  - `_toggleButtonState()` — habilita ou desabilita o botão de envio conforme a validade geral do formulário.
-  - `_setEventListeners()` — adiciona o ouvinte de `input` a cada campo do formulário.
-- **Métodos públicos:**
-  - `setEventListeners()` — habilita a validação do formulário.
-  - `resetValidation()` — limpa erros visuais e reavalia o estado do botão (usado ao reabrir um pop-up).
-
-### Módulo `utils.js`
-
-Concentra as funções compartilhadas entre os formulários e cartões, evitando duplicação de código:
-
-- `openModal(popup)` / `closeModal(popup)` — controlam a exibição dos pop-ups e o ouvinte da tecla `Esc`.
-- `handleOverlayClose(evt)` — fecha o pop-up quando o clique ocorre fora da área de conteúdo.
+Responsável por validar um formulário e controlar visualmente o estado do botão de envio. Sem alterações nesta etapa.
 
 ### Módulo `index.js`
 
-Atua como orquestrador da aplicação: importa as classes e funções dos demais módulos, mapeia os elementos do DOM, cria as instâncias de `Card` (uma para cada item de `initialCards` e para cada novo cartão criado pelo usuário) e de `FormValidator` (uma para o formulário de perfil e outra para o formulário de novo cartão), além de conectar os eventos de abertura/fechamento dos pop-ups.
+Atua exclusivamente como orquestrador da aplicação: importa todas as classes, instancia os objetos (`userInfo`, `imagePopup`, `cardSection`, `editProfilePopup`, `newCardPopup`, `editFormValidator`, `addCardFormValidator`) e conecta apenas os ouvintes de eventos de abertura de pop-ups ao botão de editar perfil e ao botão de adicionar cartão. Toda lógica de comportamento está encapsulada nas classes.
 
 ---
 
