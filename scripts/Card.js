@@ -13,8 +13,8 @@ export class Card {
       .cloneNode(true);
   }
 
-  _handleLikeIcon(evt) {
-    evt.target.classList.toggle("card__like-button_is-active");
+  _handleLikeIcon(button) {
+    button.classList.toggle("card__like-button_is-active");
   }
 
   _handleDeleteCard() {
@@ -24,7 +24,9 @@ export class Card {
 
   _setEventListeners() {
     const likeButton = this._element.querySelector(".card__like-button");
-    likeButton.addEventListener("click", (evt) => this._handleLikeIcon(evt));
+    likeButton.addEventListener("click", () =>
+      this._handleLikeIcon(likeButton),
+    );
 
     const deleteButton = this._element.querySelector(".card__delete-button");
     deleteButton.addEventListener("click", () => this._handleDeleteCard());

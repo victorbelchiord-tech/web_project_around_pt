@@ -1,7 +1,6 @@
 import { Card } from "./Card.js";
 import { FormValidator } from "./FormValidator.js";
 import { Section } from "./Section.js";
-import { Popup } from "./Popup.js";
 import { PopupWithImage } from "./PopupWithImage.js";
 import { PopupWithForm } from "./PopupWithForm.js";
 import { UserInfo } from "./UserInfo.js";
@@ -79,7 +78,6 @@ const editProfilePopup = new PopupWithForm("#edit-popup", (formData) => {
     name: formData.name,
     description: formData.description,
   });
-  editProfilePopup.close();
 });
 editProfilePopup.setEventListeners();
 
@@ -105,7 +103,6 @@ const newCardPopup = new PopupWithForm("#new-card-popup", (formData) => {
     handleCardClick,
   );
   cardSection.addItem(card.generateCard());
-  newCardPopup.close();
 });
 newCardPopup.setEventListeners();
 
