@@ -91,6 +91,19 @@
   display: flex;
 }
 
+.popup__content_content_confirm {
+  min-height: auto;
+  text-align: center;
+}
+
+.popup__content_content_confirm .popup__title {
+  margin-bottom: 30px;
+}
+
+.popup__content_content_confirm .popup__button {
+  margin-top: 0;
+}
+
 .popup__content_content_image {
   max-width: 75vw;
   max-height: 75vh;

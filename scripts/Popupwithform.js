@@ -5,7 +5,11 @@ export class PopupWithForm extends Popup {
     super(popupSelector);
     this._handleFormSubmit = handleFormSubmit;
     this._form = this._popup.querySelector(".popup__form");
-    this._inputList = Array.from(this._form.querySelectorAll(".popup__input"));
+    this._inputList = Array.from(
+      this._form.querySelectorAll(".popup__input"),
+    );
+    this._submitButton = this._form.querySelector(".popup__button");
+    this._defaultButtonText = this._submitButton.textContent;
   }
 
   _getInputValues() {
@@ -14,6 +18,13 @@ export class PopupWithForm extends Popup {
       values[input.name] = input.value;
     });
     return values;
+  }
+
+  // Mostra "Salvando..." (ou outro texto) enquanto aguarda a resposta do servidor
+  renderLoading(isLoading, loadingText = "Salvando...") {
+    this._submitButton.textContent = isLoading
+      ? loadingText
+      : this._defaultButtonText;
   }
 
   close() {
